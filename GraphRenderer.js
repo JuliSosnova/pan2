@@ -17,7 +17,10 @@ class GraphRenderer {
     let c='blue';
     // Рисует каждую вершину графа, передаются параметры х,у, с-цвет
     for (let i = 0; i < this.numNodes; i++) {
-     this.drawNode(l[i].key,l[i].value ,c )
+     this.drawNode(l[i].key,l[i].value ,c,i );
+     this.ctx.fillStyle = 'black';
+     this.ctx.font = '12px Arial';
+     this.ctx.fillText(i, l[i].key+12, l[i].value);
       
     }
 
@@ -61,51 +64,84 @@ class GraphRenderer {
       this.ctx.fillStyle = c;
       this.ctx.fill();
       this.ctx.closePath();
+     
   }
 //обход в ширину для 3 задачи
-  bfs(startNode) {
+  bfs(startNode,zad) {
     const visited = new Array(this.matrix.length).fill(false);
-  const queue = [];
-  let l = this.getCoordinates(this.centerX, this.centerY, this.radius, this.numNodes);
-  visited[startNode] = true;
-  queue.push(startNode);
-  const c = 'red';
-
-  const processNode = () => {
-    if (queue.length > 0) {
-      const currentNode = queue.shift();
-
-      // Обработка текущего узла
-      console.log('Посещаем узел:', currentNode);
-
-      this.drawNode(l[currentNode].key, l[currentNode].value, c);
-
-      // Добавляем соседние непосещенные узлы в очередь
-      for (let i = 0; i < this.matrix.length; i++) {
-        if (this.matrix[currentNode][i] === 1 && !visited[i]) {
-          visited[i] = true;
-          queue.push(i);
+    const queue = [];
+    const res=[];
+    visited[startNode] = true;
+    queue.push(startNode);
+      while (queue.length > 0) {
+        const currentNode = queue.shift();
+        // Обработка текущего узла
+        //console.log('Посещаем узел:', currentNode);
+        res.push(currentNode);
+        
+        // Добавляем соседние непосещенные узлы в очередь
+        for (let i = 0; i < this.matrix.length; i++) {
+          if (this.matrix[currentNode][i] === 1 && !visited[i]) {
+            visited[i] = true;
+            queue.push(i);
+          }
         }
       }
-
-      setTimeout(processNode, 2000); // Выполняем функцию processNode снова через 2 секунд
-    }
-  };
-
-  processNode();
-    
+    return res;
   }
+  //отрисовывает алгоритмы
+  drawFS(res){
+    let delay = 0;
+    let l = this.getCoordinates(this.centerX, this.centerY, this.radius, this.numNodes);
+    const c = 'red';
+    for (let i = 0; i < res.length; i++) {
+          setTimeout(() => {
+            this.drawNode(l[res[i]].key, l[res[i]].value, c);
+          }, delay);
+          delay += 2000;
+    }
+  }
+  //обход в глубину для 1 задачи
+  dfs(startNode,visited) {
+    let stack = [startNode];
+    visited[startNode] = true;
+    while (stack.length > 0) {
+      let node = stack.pop();
+      for (let i = 0; i < this.matrix[node].length; i++) {
+        if (this.matrix[node][i] === 1 && !visited[i]) {
+          stack.push(i);
+          visited[i] = true;
+        }
+      }
+    }
+  }
+  findComponents() {
+    let n = this.matrix.length;
+    let visited = new Array(n).fill(false);
+    let components = 0;
+    for (let i = 0; i < n; i++) {
+      if (!visited[i]) {
+        this.dfs(i, visited);
+        components++;
+      }
+    }
+    return components;
+  }
+
 }
 
 //тест
-const adjacencyMatrix = [
-  [0, 1, 1, 0],
-  [1, 0, 0, 1],
-  [1, 0, 0, 1],
-  [0, 1, 1, 0]
+/*const adjacencyMatrix = [
+  [0 ,1, 1, 0, 0],
+  [1 ,0 ,0 ,1 ,1],
+  [1 ,0 ,0 ,0 ,0],
+  [0 ,1, 0 ,0, 0],
+  [0 ,1 ,0 ,0 ,0]
 ];
 
 const graphDrawer = new GraphRenderer(adjacencyMatrix);
 graphDrawer.drawGraph();
-graphDrawer.bfs(0);
+
+alert(graphDrawer.findComponents());*/
+//graphDrawer.bfs(0);
 
