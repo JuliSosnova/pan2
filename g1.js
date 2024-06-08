@@ -1,39 +1,26 @@
 window.onload=function(){
-/*const a = [
-    [0 ,1, 1, 0, 0],
-    [1 ,0 ,0 ,1 ,1],
-    [1 ,0 ,0 ,0 ,0],
-    [0 ,1, 0 ,0, 0],
-    [0 ,1 ,0 ,0 ,0]
-  ];*/
-  const a= [
-    [0, 1, 1, 0, 0, 0],
-    [1, 0, 0, 1, 0, 0],
-    [1, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 1, 0]
-  ];
-  const graphDrawer = new GraphRenderer(a);
- 
   document.getElementById("solve").addEventListener("click", FindDFS);
   function FindDFS(){
-    const node= document.getElementById("node").value;
-    if(a.length>node){
-      graphDrawer.drawGraph();
-      graphDrawer.drawFS(graphDrawer.bfs(node-1));
-      aud();
-    }
-    else{
-      alert('bred ne vvodi');
+  let inputText = document.getElementById('matrix').value;
+  let lines = inputText.split('\n');
+  alert(lines)
+  let adjacencyMatrix = [];
+  for (let i = 0; i < lines.length; i++) {
+    adjacencyMatrix[i] = [];
+  }
+  for (let i = 0; i < lines.length; i++) {
+    let lineValues = lines[i].split(' '); 
+    for (let j = 0; j < lineValues.length; j++) {
+      adjacencyMatrix[i][j] = parseInt(lineValues[j]); 
     }
   }
-  alert(graphDrawer.findComponents());
-
+  
+  const graphDrawer = new GraphRenderer(adjacencyMatrix);
+    graphDrawer.drawGraph();
+      const node= document.getElementById("node").value;
+      const visited = new Array(adjacencyMatrix.length).fill(false);
+     // graphDrawer.drawFS(graphDrawer.dfs(node-1,visited));
+  }
 }
-  /*function aud(){
-    alert('fff');
-      var fly = new Audio();
-  fly.src = "D:/Системные/Desktop/graph/g/src/brrrr.mp3";*/
   
   
